@@ -105,7 +105,7 @@ Napi::Value requestClass::xfer_has_completed(const Napi::CallbackInfo& info) {
 Napi::Object requestClass::Init(Napi::Env env, Napi::Object exports) {
     Napi::HandleScope scope(env);
 
-    Napi::Function func = DefineClass(env, "requestClass", {
+    Napi::Function func = DefineClass(env, "request", {
         InstanceMethod("release_request", &requestClass::release_request),
         InstanceMethod("stop_request", &requestClass::stop_request),
         InstanceMethod("wait_for_request_finish", &requestClass::wait_for_request_finish),
@@ -117,7 +117,7 @@ Napi::Object requestClass::Init(Napi::Env env, Napi::Object exports) {
     constructor = Napi::Persistent(func);
     constructor.SuppressDestruct();
 
-    exports.Set("requestClass", func);
+    exports.Set("request", func);
     return exports;
 }
 

@@ -33,7 +33,7 @@ else {
 
     nScope.set_sample_rate_in_hz(nScopeDevice, 10.0);
 
-    var request = new nScope.requestClass(nScopeDevice, 10, false);
+    var request = new nScope.request(nScopeDevice, 10, false);
     console.log("request:",request);
     request.wait_for_request_finish();
     while (request.has_data()) {
