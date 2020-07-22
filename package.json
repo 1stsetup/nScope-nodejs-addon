@@ -1,0 +1,22 @@
+{
+  "name": "nscope",
+  "version": "0.1.0",
+  "description": "Nodejs link to nScope library",
+  "main": "index.js",
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "clean": "node-gyp clean"
+  },
+  "keywords": [
+    "nScope"
+  ],
+  "author": "M. Verbraak",
+  "license": "ISC",
+  "devDependencies": {
+    "node-gyp": "^7.0.0"
+  },
+  "dependencies": {
+    "node-addon-api": "^3.0.1"
+  },
+  "gypfile": true
+}
