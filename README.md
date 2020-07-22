@@ -5,9 +5,24 @@ For more information about nScope see https://www.nscope.org/
 
 This repository will create a NodeJS addon based on the nScope library (https://github.com/nLabs-nScope/nScopeAPI.git)
 
-Minimal example:
+Installation
+============
+```text
+npm install nscope
+````
+
+Requirements
+============
+
+* [node.js](http://nodejs.org) -- Tested with v12.16.3
+* [nScope library](https://github.com/nLabs-nScope/nScopeAPI/tree/develop/lib) -- Tested with v0.8
+* Compile tools like make and gcc.
+
+Example
+=======
+
 ```javascript
-const nScope = require('./build/Release/nscope.node');
+const nScope = require('nscope');
 var nScopeDevice = new nScope.device();
 try {
     console.log('API version:', nScopeDevice.check_API_version());
@@ -38,8 +53,42 @@ catch(err) {
 }
 ```
 
-All functions in nScopeAPI.h are methods in a nScope.device() object.
+API Documentation
+=================
 
-All function in nScopeAPI-requests.h are methods in a nScope.request() object
+nScope Module Functions
+-----------------------
 
-All functions in other nScope headers are methods in addOn object.
+* < _DeviceObject_ >**device**() - Should be called to create a device object.
+
+* < _RequestObject_ >**request**(< _DeviceObject_ >device, < _Number_ >numSamples, < _Boolean_ >antiAliased) - Should be called to create a request object.
+  * < _DeviceObject_ >**device** - a device object required by calling device()
+  * < _Number_ >**numSamples** - number of data samples (per channel) to request
+  * < _Boolean_ >**antiAliased** - true: turn on anti-aliasing, false: turn it off
+
+
+< _DeviceObject_ > Functions
+-----------------------------------
+
+* < _Boolean_ >**open**(< _Boolean_ >powerOn) - Open a connected nScope device and initialize it.
+  * < _Boolean_ >**powerOn** - true turns nScope on when first opened, false leaves nScope in its current state.
+
+* < _Boolean_ >**close**() - Close and clean a connected nScope device. 
+
+* < _Number_ >**check_API_version**() - check the version of this API.
+
+* < _Number_ >**check_API_build**() - check the build number of this API.
+
+* < _Number_ >**check_FW_version**() - check the version of the connected firmware. Will only work when nScope is connected to computer.
+
+* < _Number_ >**get_power_state**() - Read the PowerState of the nScope.
+
+* < _Number_ >**get_power_usage**() - Read how much power is being used by nScope in watts.
+
+* < _Number_ >**find_firmware_loader**() - find the firmware loader.
+
+* < _Number_ >**load_firmware**() - load the nScope with current firmware.
+
+* < _Number_ >**write_to_loader**() - write the firmware to the loader.
+
+
