@@ -39,5 +39,7 @@ catch(err) {
 ```
 
 All functions in nScopeAPI.h are methods in a nScope.device() object.
+
 All function in nScopeAPI-requests.h are methods in a nScope.request() object
+
 All functions in other nScope headers are methods in addOn object.
