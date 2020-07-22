@@ -8,14 +8,23 @@ CALL_NSCOPE_GET_BY_HANDLE(trigger_edge, TriggerEdge, Number)
 
 Napi::Boolean set_trigger_edge(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    Napi::Number value = info[0].As<Napi::Number>();
-    if (value.Int32Value() == 1) {
-        CALL_NSCOPE_FUNCTION(nScope_set_trigger_edge, getHandle(), FALLING_EDGE)
+    if (info.Length() < 2) {
+        std::string s = "Need 2 arguments 'set_trigger_edge'";
+        Napi::Error::New(env, s).ThrowAsJavaScriptException();
+        return Napi::Boolean::New(env, false);
     }
     else {
-        CALL_NSCOPE_FUNCTION(nScope_set_trigger_edge, getHandle(), RISING_EDGE)
+        Napi::Object object_parent = info[0].As<Napi::Object>();
+        nScopeAPIClass* nScopeAPI = Napi::ObjectWrap<nScopeAPIClass>::Unwrap(object_parent);
+        Napi::Number value = info[1].As<Napi::Number>();
+        if (value.Int32Value() == 1) {
+            CALL_NSCOPE_FUNCTION(nScope_set_trigger_edge, nScopeAPI->getHandle(), FALLING_EDGE)
+        }
+        else {
+            CALL_NSCOPE_FUNCTION(nScope_set_trigger_edge, nScopeAPI->getHandle(), RISING_EDGE)
+        }
+        return Napi::Boolean::New(env, nScopeAPI->getLastError() == SUCCESS);
     }
-    return Napi::Boolean::New(env, getLastError() == SUCCESS);
 }
 
 CALL_NSCOPE_GET_SET_BY_HANDLE(trigger_level, double, Number)

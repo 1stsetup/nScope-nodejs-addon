@@ -2,34 +2,7 @@
 
 namespace nScope {
 
-    ScopeHandle handle = NULL;
-    ErrorType _lastError = SUCCESS;
-
-ErrorType getLastError() {
-    return _lastError;
-}
-
-void setLastError(ErrorType value) {
-    _lastError = value;
-}
-
-ScopeHandle getHandle() {
-    return handle;
-}
-
-void setHandle(ScopeHandle newHandle) {
-    handle = newHandle;
-}
-
-Napi::Number lastError(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-
-    return Napi::Number::New(env, _lastError);
-}
-
-Napi::String lastErrorStr(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
-
+Napi::String lastErrorStr(Napi::Env env, ErrorType _lastError) {
     switch(_lastError) {
         case SUCCESS: return Napi::String::New(env, (std::string)"No error was encountered");
         case UNKNOWN_ERROR: return Napi::String::New(env, (std::string)"An unknown error occurred");
@@ -49,12 +22,6 @@ Napi::String lastErrorStr(const Napi::CallbackInfo& info) {
         case VALUE_WARNING_TOO_LARGE: return Napi::String::New(env, (std::string)"Value warning: a parameter is very large");
     }
     return Napi::String::New(env, (std::string)"An unknown error code");
-}
-
-Napi::Object InitGlobal(Napi::Env env, Napi::Object exports) {
-    NAPI_FUNCTION_EXPORT(lastError);
-    NAPI_FUNCTION_EXPORT(lastErrorStr);
-    return exports;
 }
 
 }

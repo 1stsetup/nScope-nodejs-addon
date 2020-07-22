@@ -20,6 +20,7 @@ class requestClass : public Napi::ObjectWrap<requestClass> {
   Napi::Value has_data(const Napi::CallbackInfo& info);
   Napi::Value xfer_has_completed(const Napi::CallbackInfo& info);
   Request _request;
+  nScopeAPIClass* _nScopeAPI;
 };
 
 }

@@ -1,97 +1,160 @@
 #include "nScopeAPI.h"
 
+#define CALL_NSCOPE_FUNCTION(name, ...)     ErrorType error = name(__VA_ARGS__); \
+    this->_lastError = SUCCESS; \
+    if (error != SUCCESS) { \
+        this->_lastError = error; \
+        std::string s = "Error calling nScopeAPI function '"; \
+        s.append(#name); \
+        s.append("'"); \
+        Napi::Error::New(env, s).ThrowAsJavaScriptException(); \
+    }
+
 namespace nScope {
 
-Napi::Boolean open(const Napi::CallbackInfo& info) {
+Napi::FunctionReference nScopeAPIClass::constructor;
+
+nScopeAPIClass::nScopeAPIClass(const Napi::CallbackInfo& info) : Napi::ObjectWrap<nScopeAPIClass>(info)  {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
+
+    this->_handle = NULL;
+    this->_opened = false;
+}
+
+ScopeHandle nScopeAPIClass::getHandle() {
+    return this->_handle;
+}
+
+Napi::Value nScopeAPIClass::isOpen(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
+
+    return Napi::Boolean::New(env, this->_opened);
+}
+
+Napi::Value nScopeAPIClass::open(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     if (info.Length() < 1 || !info[0].IsBoolean()) {
-        Napi::TypeError::New(env, "Boolean expected").ThrowAsJavaScriptException();
+        Napi::TypeError::New(env, "Boolean expected. PowerOn (Boolean)").ThrowAsJavaScriptException();
     } 
 
     Napi::Boolean poweron = info[0].As<Napi::Boolean>();
-    ScopeHandle tmpHandle;
-    CALL_NSCOPE_FUNCTION(nScope_open, poweron, &tmpHandle)
-    setHandle(tmpHandle);
-    return Napi::Boolean::New(env, getLastError() == SUCCESS);
+    CALL_NSCOPE_FUNCTION(nScope_open, poweron, &(this->_handle))
+    if (this->_lastError == SUCCESS) {
+        this->_opened = true;
+    }
+    return Napi::Boolean::New(env, this->_lastError == SUCCESS);
 }
 
-Napi::Boolean close(const Napi::CallbackInfo& info) {
+Napi::Value nScopeAPIClass::close(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
-    ScopeHandle tmpHandle = getHandle();
-    CALL_NSCOPE_FUNCTION(nScope_close, &tmpHandle)
-    setHandle(tmpHandle);
-    return Napi::Boolean::New(env, getLastError() == SUCCESS);
+    this->_opened = false;
+
+    CALL_NSCOPE_FUNCTION(nScope_close, &(this->_handle))
+    return Napi::Boolean::New(env, this->_lastError == SUCCESS);
 }
 
-Napi::Number get_power_state(const Napi::CallbackInfo& info) {
+Napi::Value nScopeAPIClass::get_power_state(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     PowerState currentState;
-    CALL_NSCOPE_FUNCTION(nScope_get_power_state, getHandle(), &currentState)
+    CALL_NSCOPE_FUNCTION(nScope_get_power_state, this->_handle, &currentState)
     return Napi::Number::New(env, currentState);
 }
 
-CALL_NSCOPE_GET_BY_HANDLE(power_usage, double, Number)
-
-Napi::Number check_API_version(const Napi::CallbackInfo& info) {
+Napi::Value nScopeAPIClass::get_power_usage(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
+
+    double currentUsage;
+    CALL_NSCOPE_FUNCTION(nScope_get_power_usage, this->_handle, &currentUsage)
+    return Napi::Number::New(env, currentUsage);
+}
+
+Napi::Value nScopeAPIClass::check_API_version(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     double version;
     CALL_NSCOPE_FUNCTION(nScope_check_API_version, &version);
     return Napi::Number::New(env, version);
 }
 
-Napi::Number check_API_build(const Napi::CallbackInfo& info) {
+Napi::Value nScopeAPIClass::check_API_build(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     int buildNo;
     CALL_NSCOPE_FUNCTION(nScope_check_API_build, &buildNo);
     return Napi::Number::New(env, buildNo);
 }
 
-Napi::Number check_FW_version(const Napi::CallbackInfo& info) {
+Napi::Value nScopeAPIClass::check_FW_version(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     double version;
     CALL_NSCOPE_FUNCTION(nScope_check_FW_version, &version);
    return Napi::Number::New(env, version);
 }
 
-Napi::Boolean find_firmware_loader(const Napi::CallbackInfo& info) {
+Napi::Value nScopeAPIClass::find_firmware_loader(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     CALL_NSCOPE_FUNCTION(nScope_find_firmware_loader)
-    return Napi::Boolean::New(env, getLastError() == SUCCESS);
+    return Napi::Boolean::New(env, this->_lastError == SUCCESS);
 }
 
-Napi::Boolean write_to_loader(const Napi::CallbackInfo& info) {
+Napi::Value nScopeAPIClass::write_to_loader(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     CALL_NSCOPE_FUNCTION(nScope_write_to_loader)
-    return Napi::Boolean::New(env, getLastError() == SUCCESS);
+    return Napi::Boolean::New(env, this->_lastError == SUCCESS);
 }
 
-Napi::Boolean load_firmware(const Napi::CallbackInfo& info) {
+Napi::Value nScopeAPIClass::load_firmware(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     CALL_NSCOPE_FUNCTION(nScope_load_firmware)
-    return Napi::Boolean::New(env, getLastError() == SUCCESS);
+    return Napi::Boolean::New(env, this->_lastError == SUCCESS);
 }
 
-Napi::Object InitAPI(Napi::Env env, Napi::Object exports) {
-    NAPI_FUNCTION_EXPORT(check_API_version);
-    NAPI_FUNCTION_EXPORT(check_API_build);
-    NAPI_FUNCTION_EXPORT(check_FW_version);
-    NAPI_FUNCTION_EXPORT(open);
-    NAPI_FUNCTION_EXPORT(close);
-    NAPI_FUNCTION_EXPORT(get_power_state);
-    NAPI_FUNCTION_EXPORT(get_power_usage);
-    NAPI_FUNCTION_EXPORT(load_firmware);
-    NAPI_FUNCTION_EXPORT(write_to_loader);
-    NAPI_FUNCTION_EXPORT(find_firmware_loader);
+ErrorType nScopeAPIClass::getLastError() {
+    return this->_lastError;
+}
+
+Napi::Object nScopeAPIClass::Init(Napi::Env env, Napi::Object exports) {
+    Napi::HandleScope scope(env);
+
+    Napi::Function func = DefineClass(env, "device", {
+        InstanceMethod("check_API_version", &nScopeAPIClass::check_API_version),
+        InstanceMethod("check_API_build", &nScopeAPIClass::check_API_build),
+        InstanceMethod("check_FW_version", &nScopeAPIClass::check_FW_version),
+        InstanceMethod("open", &nScopeAPIClass::open),
+        InstanceMethod("isOpen", &nScopeAPIClass::isOpen),
+        InstanceMethod("close", &nScopeAPIClass::close),
+        InstanceMethod("get_power_state", &nScopeAPIClass::get_power_state),
+        InstanceMethod("get_power_usage", &nScopeAPIClass::get_power_usage),
+        InstanceMethod("load_firmware", &nScopeAPIClass::load_firmware),
+        InstanceMethod("write_to_loader", &nScopeAPIClass::write_to_loader),
+        InstanceMethod("find_firmware_loader", &nScopeAPIClass::find_firmware_loader),
+    });
+
+    constructor = Napi::Persistent(func);
+    constructor.SuppressDestruct();
+
+    exports.Set("device", func);
     return exports;
+
 }
 
 }

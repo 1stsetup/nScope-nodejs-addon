@@ -9,8 +9,7 @@
 #include "nScopeAPI-sampleTiming.h"
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
-  nScope::InitGlobal(env, exports);
-  nScope::InitAPI(env, exports);
+  nScope::nScopeAPIClass::Init(env, exports);
   nScope::InitTriggers(env, exports);
   nScope::InitPulseGenerators(env, exports);
   nScope::InitAnalogOutputs(env, exports);
