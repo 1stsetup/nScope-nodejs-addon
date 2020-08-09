@@ -1,5 +1,5 @@
 # nScope-nodejs-addon
-Addon for NodeJS for the nScope library
+Addon for NodeJS for the nScope API library
 
 For more information about nScope see https://www.nscope.org/
 
@@ -8,7 +8,7 @@ This repository will create a NodeJS addon based on the nScope library (https://
 Installation
 ============
 ```text
-npm install nscope
+npm install nscopeapi
 ````
 
 Requirements
@@ -22,7 +22,7 @@ Example
 =======
 
 ```javascript
-const nScope = require('nscope');
+const nScope = require('nscopeapi');
 var nScopeDevice = new nScope.device();
 try {
     console.log('API version:', nScopeDevice.check_API_version());

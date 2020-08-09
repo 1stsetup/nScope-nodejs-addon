@@ -1,7 +1,7 @@
 {
-  "name": "nscope",
-  "version": "1.0.0",
-  "description": "Nodejs link to nScope library",
+  "name": "nscopeapi",
+  "version": "1.0.4",
+  "description": "Nodejs link to nScope API library",
   "main": "index.js",
   "scripts": {
     "build": "node-gyp rebuild",

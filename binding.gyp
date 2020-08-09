@@ -1,10 +1,9 @@
 {
     "targets": [{
-        "target_name": "nscope",
+        "target_name": "nscopeapi",
         "cflags!": [ "-fno-exceptions" ],
         "cflags_cc!": [ "-fno-exceptions" ],
         "sources": [
-            "src/globalnScope.cpp",
             "src/main.cpp",
             "src/nScopeAPI.cpp",
             "src/nScopeAPI-analogInputs.cpp",
