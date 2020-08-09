@@ -1,0 +1,8 @@
+nScopeAPI/docs
+nScopeAPI/lib
+nScopeAPI/matlab
+nScopeAPI/python
+nScopeAPI/nscopetest.cpp
+nScopeAPI/.git
+build
+.vscode
