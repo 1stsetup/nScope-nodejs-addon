@@ -2,21 +2,19 @@
 #define GLOBAL_NSCOPE
 
 #include <napi.h>
+#include <node_api.h>
+#include <assert.h>
 #include "../nScopeAPI/include/nScopeAPI.h"
 #include <string>
 #include "nScopeAPI.h"
 
 namespace nScope {
 
-Napi::String lastErrorStr(Napi::Env env, ErrorType _lastError);
-
 #define H_NAPI_FUNCTION(type,name) Napi::type name(const Napi::CallbackInfo& info);
 
 #define H_NAPI_GET_SET_FUNCTION(type,name) H_NAPI_FUNCTION(type,get_ ## name) \
     H_NAPI_FUNCTION(Boolean,set_ ## name)
 
-
-Napi::Object InitGlobal(Napi::Env env, Napi::Object exports);
 
 #define NAPI_FUNCTION_EXPORT(name) exports.Set(#name, Napi::Function::New(env, name));
 
@@ -27,7 +25,6 @@ Napi::Object InitGlobal(Napi::Env env, Napi::Object exports);
     if (error != SUCCESS) { \
         Napi::Error errObj = Napi::Error::New(env); \
         errObj.Set("errorCode", Napi::Number::New(env, error)); \
-        errObj.Set("msg", lastErrorStr(env, error)); \
         errObj.ThrowAsJavaScriptException(); \
     }
 

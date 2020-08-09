@@ -7,6 +7,7 @@
 #include "nScopeAPI-analogOutputs.h"
 #include "nScopeAPI-requests.h"
 #include "nScopeAPI-sampleTiming.h"
+#include "nScopeAPI-defs.h"
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
   nScope::nScopeAPIClass::Init(env, exports);
@@ -16,6 +17,7 @@ Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
   nScope::InitAnalogInputs(env, exports);
   nScope::InitSampleTiming(env, exports);
   nScope::requestClass::Init(env, exports);
+  nScope::InitDefs(env, exports);
   return exports;
 }
 

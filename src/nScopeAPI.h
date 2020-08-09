@@ -2,6 +2,8 @@
 #define NSCOPEAPI
 
 #include <napi.h>
+#include <node_api.h>
+#include <assert.h>
 #include "../nScopeAPI/include/nScopeAPI.h"
 
 namespace nScope {
@@ -25,6 +27,8 @@ class nScopeAPIClass : public Napi::ObjectWrap<nScopeAPIClass> {
         Napi::Value load_firmware(const Napi::CallbackInfo& info);
         Napi::Value write_to_loader(const Napi::CallbackInfo& info);
         Napi::Value find_firmware_loader(const Napi::CallbackInfo& info);
+        Napi::Value lastError(const Napi::CallbackInfo& info);
+        Napi::Value lastErrorStr(const Napi::CallbackInfo& info);
         ScopeHandle _handle;
         bool _opened;
         ErrorType _lastError;
