@@ -49,7 +49,9 @@ try {
     }
 }
 catch(err) {
-    console.error(err);
+    console.error("An error occured:"+err);
+    console.log("\tlastError:",nScopeDevice.lastError());
+    console.log("\tlastErrorStr:",nScopeDevice.lastErrorStr());
 }
 ```
 

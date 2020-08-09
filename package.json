@@ -1,6 +1,6 @@
 {
   "name": "nscopeapi",
-  "version": "1.0.4",
+  "version": "1.1.1",
   "description": "Nodejs link to nScope API library",
   "main": "index.js",
   "scripts": {
